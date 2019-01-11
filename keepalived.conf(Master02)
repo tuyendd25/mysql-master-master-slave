@@ -1,0 +1,28 @@
+vrrp_script chk_keepalived {
+        script "pidof keepalived"
+        interval 2
+}
+vrrp_instance APP {
+  interface ens160
+  virtual_router_id 106
+        unicast_src_ip 172.16.20.150
+        unicast_peer {
+                172.16.20.149
+        }
+nopreempt
+        advert_int 1
+        authentication {
+                auth_type PASS
+                auth_pass 123456
+        }
+        virtual_ipaddress {
+                172.16.20.145/32
+        }
+        track_interface {
+                ens160
+        }
+track_script {
+        chk_keepalived
+}
+#notify /usr/local/sbin/notify.sh
+}
